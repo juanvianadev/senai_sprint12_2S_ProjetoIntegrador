@@ -1,12 +1,12 @@
 import google.generativeai as genai   
 
-def gera_prompt(template, temperatura, umidade, co2):
+def gera_prompt(template, temperatura, umidade, co2, pressao, altitude, poeira):
     genai.configure(api_key="AIzaSyChtbxglA_gwNop0FmeUrirEwxrE71dQXQ")
 
     try:
         generative_model = genai.GenerativeModel('gemini-1.5-flash')
         response = generative_model.generate_content(
-            f"neste template a seguir troque o a temperatura por {temperatura} e a umidade por {umidade}: {template} sem Explicação do código e sem comentar quais foram as alterações"
+            f"neste template a seguir troque o a temperatura por {temperatura}, umidade por {umidade} pressao pot {pressao}, altitude por {altitude}, umidade por {umidade}, co2 por {co2}, poeira por {poeira}, {template} sem Explicação do código e sem comentar quais foram as alterações"
             #f"Monte um corpo de e-mail html/css para informar os seguintes valores de dados, temperatura de {temperatura}, umidade de {umidade}, altitude de {altitude}, pressao de {pressao} e co2 de {co2} sem Explicação do código"
         )
 

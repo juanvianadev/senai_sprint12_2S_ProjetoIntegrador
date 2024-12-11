@@ -15,7 +15,7 @@ app = Flask('registro')
 #configura o SQLALchemy para rastrear modificações
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:Senai%40134@127.0.0.1/bd_medidor'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:senai%40134@127.0.0.1/bd_medidor'
 
 mybd = SQLAlchemy(app)
 
@@ -69,7 +69,11 @@ def msg_sensor(client, userdata, msg):
             mybd.session.add(novos_dados)
             mybd.session.commit()
             
-            if (umidade < 45 or temperatura > 40 or temperatura < 15):
+            if (umidade < 70 or umidade > 80 or 
+                temperatura < 18 or temperatura > 35 or 
+                altitude > 800 or 
+                co2 < 400 or co2 > 700 or 
+                poeira > 50):
                 esqueleto = """<!DOCTYPE html>
                                 <html>
                                 <head>
@@ -121,27 +125,50 @@ def msg_sensor(client, userdata, msg):
                                 <body>
                                 <div class="container">
                                 <div class="header">
-                                    <h2>Alerta de Danos à Plantação</h2>
+                                <h2>Alerta de Danos à Plantação</h2>
                                 </div>
                                 <div class="content">
-                                    <p>
-                                    Esta é uma mensagem de alerta sobre possíveis danos à sua plantação!
-                                    </p>
-                                    <div class="data">
-                                    <span>Umidade:</span> 79%
-                                    </div>
-                                    <div class="data">
-                                    <span>Temperatura:</span> 24.48°C
-                                    </div>
-                                    <div class="warning">
-                                    As condições atuais podem causar danos à sua plantação! Monitoramento constante é necessário.
-                                    </div>
+                                <p>
+                                Esta é uma mensagem de alerta sobre possíveis danos à sua plantação!
+                                </p>
+                                <div class="data">
+                                <span>Umidade:</span> 79%
+                                </div>
+                                <div class="data">
+                                <span>Temperatura:</span> 24.48°C
+                                </div>
+                                <div class="data">
+                                <span>Pressão:</span> 1013 hPa
+                                </div>
+                                <div class="data">
+                                <span>Altitude:</span> 200 m
+                                </div>
+                                <div class="data">
+                                <span>CO₂:</span> 410 ppm
+                                </div>
+                                <div class="data">
+                                <span>Poeira:</span> 45 µg/m³
+                                </div>
+                                <div class="info">
+                                <h3>Condições Ideais para Cultivo</h3>
+                                <ul>
+                                <li><strong>Temperatura:</strong> A faixa ideal está entre 20°C e 30°C para o crescimento saudável da planta. Durante a maturação, temperaturas mais baixas (10°C a 20°C) são favoráveis para melhorar o acúmulo de sacarose nos colmos.</li>
+                                <li><strong>Pressão:</strong> Não é diretamente destacada como um fator crítico, mas, por estar correlacionada com a altitude, pode influenciar indiretamente na evapotranspiração e disponibilidade de água.</li>
+                                <li><strong>Altitude:</strong> Áreas de altitudes moderadas são preferíveis, pois evitam extremos térmicos e garantem boa drenagem.</li>
+                                <li><strong>Umidade:</strong> Idealmente entre 60% e 80%, com chuvas bem distribuídas ao longo do ciclo. No entanto, baixos níveis de umidade são desejáveis durante a maturação para reduzir o crescimento vegetativo.</li>
+                                <li><strong>CO₂:</strong> A cana-de-açúcar responde positivamente a níveis elevados de dióxido de carbono, o que pode melhorar a eficiência fotossintética e o rendimento, desde que outros fatores estejam adequados.</li>
+                                <li><strong>Poeira:</strong> Não há evidências diretas de que afete o cultivo, mas altos níveis podem impactar a saúde das folhas e reduzir a eficiência da fotossíntese.</li>
+                                </ul>
+                                </div>
+                                <div class="warning">
+                                As condições atuais podem causar danos à sua plantação! Monitoramento constante é necessário.
+                                </div>
                                 </div>
                                 </div>
                                 </body>
                                 </html>"""
-                body = gera_prompt(esqueleto, temperatura, umidade, co2)
-                enviar_email("Alerta de agora", "mvinicius.oliveira04@gmail.com", body)
+                body = gera_prompt(esqueleto, temperatura, umidade, co2, altitude, poeira, pressao)
+                enviar_email("Alerta de agora", "juanviana2577@gmail.com", body)
                 print("Email enviado!")
 
             print("Dados foram inseridos com sucesso no banco!")
